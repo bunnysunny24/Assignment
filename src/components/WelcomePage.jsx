@@ -6,14 +6,11 @@ function WelcomePage() {
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState(false);
   
-  // Animation states
   useEffect(() => {
-    // Simulate app loading for smooth animations
     const timer = setTimeout(() => setLoaded(true), 300);
     return () => clearTimeout(timer);
   }, []);
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -51,40 +48,32 @@ function WelcomePage() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
-      {/* Decorative background elements */}
       <div className="absolute top-0 left-0 w-32 h-32 bg-purple-200 rounded-full opacity-20 transform -translate-x-1/2 -translate-y-1/2" />
       <div className="absolute bottom-0 right-0 w-64 h-64 bg-indigo-200 rounded-full opacity-20 transform translate-x-1/4 translate-y-1/4" />
-      
-      {/* Mobile App Container */}
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="bg-white rounded-md shadow-lg w-full max-w-sm h-[667px] relative overflow-hidden border border-gray-100"
       >
-        {/* Content container */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
           animate={loaded ? "visible" : "hidden"}
           className="absolute bottom-0 left-0 right-0 p-6 bg-white"
         >
-          {/* Text content - adjusted font sizes */}
           <motion.h1 
             variants={itemVariants}
             className="text-xl font-medium text-gray-800 mb-1"
           >
             Welcome to PopX
           </motion.h1>
-          
           <motion.p 
             variants={itemVariants}
             className="text-gray-500 text-sm mb-6"
           >
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </motion.p>
-          
-          {/* Buttons */}
           <motion.button
             variants={itemVariants}
             whileHover={buttonHoverEffect}
