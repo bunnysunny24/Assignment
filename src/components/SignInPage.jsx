@@ -8,26 +8,60 @@ function SignInPage() {
   const [password, setPassword] = useState('');
   const [isButtonActive, setIsButtonActive] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState('');
   
   useEffect(() => {
     // Simulate loading for smooth animations
     const timer = setTimeout(() => setLoaded(true), 300);
+    
+    // Get the last registered email if available
+    const lastEmail = localStorage.getItem('lastRegisteredEmail');
+    if (lastEmail) {
+      setEmail(lastEmail);
+    }
+    
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     // Enable button only when both fields have values
     setIsButtonActive(email.trim() !== '' && password.trim() !== '');
-  }, [email, password]);
+    // Clear error message when inputs change
+    if (error) setError('');
+  }, [email, password, error]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle login logic here
-    if (isButtonActive) {
-      // Navigate to dashboard or home page after login
-      // navigate('/dashboard');
-      console.log('Login attempted with:', { email, password });
+    
+    if (!isButtonActive) return;
+    
+    // Get users from localStorage
+    const users = JSON.parse(localStorage.getItem('popxUsers') || '[]');
+    
+    // Find user with matching email
+    const user = users.find(user => user.email === email);
+    
+    if (!user) {
+      setError('No account found with this email address');
+      return;
     }
+    
+    // Check password
+    if (user.password !== password) {
+      setError('Incorrect password');
+      return;
+    }
+    
+    // Store logged in user
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    
+    // Navigate to dashboard or home page after login
+    navigate('/dashboard');
+    console.log('Login successful for:', { email, password });
+  };
+
+  const handleCreateAccount = () => {
+    navigate('/register');
   };
 
   // Animation variants
@@ -93,6 +127,17 @@ function SignInPage() {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </motion.p>
           
+          {/* Error message */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-4 p-2 bg-red-50 border border-red-200 text-red-600 text-sm rounded-md"
+            >
+              {error}
+            </motion.div>
+          )}
+          
           {/* Email Field */}
           <motion.div 
             variants={itemVariants}
@@ -141,6 +186,23 @@ function SignInPage() {
           >
             Login
           </motion.button>
+          
+          {/* Create Account Link */}
+          <motion.div
+            variants={itemVariants}
+            className="mt-6 text-center"
+          >
+            <p className="text-gray-600 text-sm">
+              Don't have an account?{' '}
+              <button
+                type="button"
+                onClick={handleCreateAccount}
+                className="text-purple-600 font-medium hover:underline focus:outline-none"
+              >
+                Create Account
+              </button>
+            </p>
+          </motion.div>
         </motion.form>
       </motion.div>
     </div>

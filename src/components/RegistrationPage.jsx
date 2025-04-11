@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function RegistrationPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
+    countryCode: '+91', // Default to India
     phoneNumber: '',
     emailAddress: '',
     password: '',
@@ -13,6 +14,9 @@ function RegistrationPage() {
     isAgency: 'yes'
   });
   const [loaded, setLoaded] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   
   useEffect(() => {
     // Simulate loading for smooth animations
@@ -22,10 +26,54 @@ function RegistrationPage() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    
+    if (name === 'phoneNumber') {
+      // Only allow digits and limit to 10 characters
+      const digitsOnly = value.replace(/\D/g, '').slice(0, 10);
+      setFormData({
+        ...formData,
+        [name]: digitsOnly
+      });
+      
+      // Validate phone number length
+      if (digitsOnly.length > 0 && digitsOnly.length !== 10) {
+        setPhoneError('Phone number must be exactly 10 digits');
+      } else {
+        setPhoneError('');
+      }
+    } else if (name === 'password') {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+      
+      // Validate password
+      validatePassword(value);
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
+  };
+
+  const validatePassword = (password) => {
+    if (password.length < 9) {
+      setPasswordError('Password must be at least 9 characters long');
+      return false;
+    }
+    
+    const hasLetter = /[A-Za-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSymbol = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+    
+    if (!hasLetter || !hasNumber || !hasSymbol) {
+      setPasswordError('Password must include letters, numbers, and symbols');
+      return false;
+    }
+    
+    setPasswordError('');
+    return true;
   };
 
   const handleAgencyChange = (value) => {
@@ -37,10 +85,56 @@ function RegistrationPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Registration form submitted:', formData);
-    // Process form submission here
-    // navigate('/dashboard');
+    
+    // Validate phone number and password before submission
+    const isPhoneValid = formData.phoneNumber.length === 10;
+    const isPasswordValid = validatePassword(formData.password);
+    
+    if (!isPhoneValid) {
+      setPhoneError('Phone number must be exactly 10 digits');
+      return;
+    }
+    
+    if (!isPasswordValid) {
+      return;
+    }
+    
+    // Save user data to localStorage
+    const userData = {
+      fullName: formData.fullName,
+      phone: `${formData.countryCode}${formData.phoneNumber}`,
+      email: formData.emailAddress,
+      password: formData.password, // In a real app, would be hashed
+      companyName: formData.companyName,
+      isAgency: formData.isAgency,
+      createdAt: new Date().toISOString()
+    };
+    
+    // Check if users array exists in localStorage
+    const existingUsers = JSON.parse(localStorage.getItem('popxUsers') || '[]');
+    existingUsers.push(userData);
+    localStorage.setItem('popxUsers', JSON.stringify(existingUsers));
+    
+    // Store the current user email for login page
+    localStorage.setItem('lastRegisteredEmail', formData.emailAddress);
+    
+    // Show success popup
+    setShowSuccessPopup(true);
+    
+    // Redirect to login page after 2 seconds
+    setTimeout(() => {
+      navigate('/login');
+    }, 2000);
   };
+
+  // Popular country codes - more compact format
+  const countryCodes = [
+    { code: '+91', country: '🇮🇳' },
+    { code: '+1', country: '🇺🇸' },
+    { code: '+44', country: '🇬🇧' },
+    { code: '+61', country: '🇦🇺' },
+    { code: '+49', country: '🇩🇪' },
+  ];
 
   // Animation variants
   const containerVariants = {
@@ -68,6 +162,26 @@ function RegistrationPage() {
     }
   };
 
+  const popupVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 20
+      }
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.8,
+      transition: {
+        duration: 0.3
+      }
+    }
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
       {/* Mobile App Container */}
@@ -75,7 +189,7 @@ function RegistrationPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="bg-white w-full max-w-sm h-[667px] overflow-y-auto rounded-md shadow-md border border-gray-100 px-6 pt-6 pb-8"
+        className="bg-white w-full max-w-sm h-[667px] overflow-y-auto rounded-md shadow-md border border-gray-100 px-6 pt-6 pb-8 relative"
       >
         <motion.form 
           variants={containerVariants}
@@ -103,7 +217,7 @@ function RegistrationPage() {
               whileFocus={{ boxShadow: "0 0 0 1px rgba(168, 85, 247, 0.2)" }}
               type="text"
               name="fullName"
-              placeholder="Marry Doe"
+              placeholder="John Doe"
               className="w-full p-2 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
               value={formData.fullName}
               onChange={handleInputChange}
@@ -111,21 +225,38 @@ function RegistrationPage() {
             />
           </motion.div>
           
-          {/* Phone Number Field */}
+          {/* Phone Number Field with Compact Country Code */}
           <motion.div variants={itemVariants}>
             <label className="block text-purple-500 text-xs font-medium mb-1">
               Phone number<span className="text-purple-500">*</span>
             </label>
-            <motion.input
-              whileFocus={{ boxShadow: "0 0 0 1px rgba(168, 85, 247, 0.2)" }}
-              type="tel"
-              name="phoneNumber"
-              placeholder="Marry Doe"
-              className="w-full p-2 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
-              value={formData.phoneNumber}
-              onChange={handleInputChange}
-              required
-            />
+            <div className="flex">
+              <select
+                name="countryCode"
+                value={formData.countryCode}
+                onChange={handleInputChange}
+                className="p-2 border border-gray-200 rounded-l-md focus:outline-none text-gray-700 text-xs w-20"
+              >
+                {countryCodes.map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {country.country} {country.code}
+                  </option>
+                ))}
+              </select>
+              <motion.input
+                whileFocus={{ boxShadow: "0 0 0 1px rgba(168, 85, 247, 0.2)" }}
+                type="tel"
+                name="phoneNumber"
+                placeholder="10-digit number"
+                className="flex-1 p-2 border border-l-0 border-gray-200 rounded-r-md focus:outline-none text-gray-700 text-sm"
+                value={formData.phoneNumber}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            {phoneError && (
+              <p className="text-red-500 text-xs mt-1">{phoneError}</p>
+            )}
           </motion.div>
           
           {/* Email Address Field */}
@@ -137,7 +268,7 @@ function RegistrationPage() {
               whileFocus={{ boxShadow: "0 0 0 1px rgba(168, 85, 247, 0.2)" }}
               type="email"
               name="emailAddress"
-              placeholder="Marry Doe"
+              placeholder="email@example.com"
               className="w-full p-2 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
               value={formData.emailAddress}
               onChange={handleInputChange}
@@ -145,7 +276,7 @@ function RegistrationPage() {
             />
           </motion.div>
           
-          {/* Password Field */}
+          {/* Password Field with Requirements */}
           <motion.div variants={itemVariants}>
             <label className="block text-purple-500 text-xs font-medium mb-1">
               Password <span className="text-purple-500">*</span>
@@ -154,12 +285,18 @@ function RegistrationPage() {
               whileFocus={{ boxShadow: "0 0 0 1px rgba(168, 85, 247, 0.2)" }}
               type="password"
               name="password"
-              placeholder="Marry Doe"
+              placeholder="9+ chars with letters, numbers & symbols"
               className="w-full p-2 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
               value={formData.password}
               onChange={handleInputChange}
               required
             />
+            {passwordError && (
+              <p className="text-red-500 text-xs mt-1">{passwordError}</p>
+            )}
+            {!passwordError && formData.password && (
+              <p className="text-green-500 text-xs mt-1">Password meets requirements</p>
+            )}
           </motion.div>
           
           {/* Company Name Field */}
@@ -171,7 +308,7 @@ function RegistrationPage() {
               whileFocus={{ boxShadow: "0 0 0 1px rgba(168, 85, 247, 0.2)" }}
               type="text"
               name="companyName"
-              placeholder="Marry Doe"
+              placeholder="Your company (optional)"
               className="w-full p-2 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
               value={formData.companyName}
               onChange={handleInputChange}
@@ -226,8 +363,10 @@ function RegistrationPage() {
             </div>
           </motion.div>
           
-          {/* Spacer */}
-          <div className="h-8"></div>
+          {/* Password Requirements - Simplified to save space */}
+          <motion.div variants={itemVariants} className="text-xs text-gray-500">
+            <p>Password must have 9+ chars with letters, numbers, and symbols</p>
+          </motion.div>
           
           {/* Create Account Button */}
           <motion.button
@@ -235,11 +374,38 @@ function RegistrationPage() {
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full py-2.5 bg-purple-600 text-white text-sm font-medium rounded-md transition-all duration-300"
+            className="w-full py-2.5 bg-purple-600 text-white text-sm font-medium rounded-md transition-all duration-300 mt-6"
           >
             Create Account
           </motion.button>
         </motion.form>
+        
+        {/* Success Popup */}
+        <AnimatePresence>
+          {showSuccessPopup && (
+            <motion.div
+              key="success-popup"
+              variants={popupVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50"
+            >
+              <div className="bg-white rounded-md p-6 w-64 text-center">
+                <div className="flex justify-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+                <h3 className="text-lg font-medium text-gray-800 mb-2">Success!</h3>
+                <p className="text-sm text-gray-600 mb-4">Account created successfully</p>
+                <p className="text-xs text-gray-500">Redirecting to login...</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </div>
   );
