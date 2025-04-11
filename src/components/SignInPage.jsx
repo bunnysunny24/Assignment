@@ -11,10 +11,7 @@ function SignInPage() {
   const [error, setError] = useState('');
   
   useEffect(() => {
-    // Simulate loading for smooth animations
     const timer = setTimeout(() => setLoaded(true), 300);
-    
-    // Get the last registered email if available
     const lastEmail = localStorage.getItem('lastRegisteredEmail');
     if (lastEmail) {
       setEmail(lastEmail);
@@ -24,9 +21,7 @@ function SignInPage() {
   }, []);
 
   useEffect(() => {
-    // Enable button only when both fields have values
     setIsButtonActive(email.trim() !== '' && password.trim() !== '');
-    // Clear error message when inputs change
     if (error) setError('');
   }, [email, password, error]);
 
@@ -34,11 +29,7 @@ function SignInPage() {
     e.preventDefault();
     
     if (!isButtonActive) return;
-    
-    // Get users from localStorage
     const users = JSON.parse(localStorage.getItem('popxUsers') || '[]');
-    
-    // Find user with matching email
     const user = users.find(user => user.email === email);
     
     if (!user) {
@@ -46,16 +37,11 @@ function SignInPage() {
       return;
     }
     
-    // Check password
     if (user.password !== password) {
       setError('Incorrect password');
       return;
     }
-    
-    // Store logged in user
     localStorage.setItem('currentUser', JSON.stringify(user));
-    
-    // Navigate to account page after login instead of dashboard
     navigate('/account');
     console.log('Login successful for:', { email, password });
   };
@@ -64,7 +50,6 @@ function SignInPage() {
     navigate('/register');
   };
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -92,7 +77,6 @@ function SignInPage() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
-      {/* Mobile App Container */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -105,7 +89,6 @@ function SignInPage() {
           animate={loaded ? "visible" : "hidden"}
           onSubmit={handleSubmit}
         >
-          {/* Header Text */}
           <motion.h1 
             variants={itemVariants}
             className="text-2xl font-semibold text-gray-800 mb-1"
@@ -119,7 +102,6 @@ function SignInPage() {
             PopX account
           </motion.h1>
           
-          {/* Subheader */}
           <motion.p 
             variants={itemVariants}
             className="text-gray-500 text-sm mb-6"
@@ -127,7 +109,6 @@ function SignInPage() {
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </motion.p>
           
-          {/* Error message */}
           {error && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -138,7 +119,6 @@ function SignInPage() {
             </motion.div>
           )}
           
-          {/* Email Field */}
           <motion.div 
             variants={itemVariants}
             className="mb-4"
@@ -155,8 +135,6 @@ function SignInPage() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </motion.div>
-          
-          {/* Password Field */}
           <motion.div 
             variants={itemVariants}
             className="mb-6"
@@ -173,8 +151,6 @@ function SignInPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </motion.div>
-          
-          {/* Login Button */}
           <motion.button
             variants={itemVariants}
             whileHover={isButtonActive ? { scale: 1.02 } : {}}
@@ -186,8 +162,6 @@ function SignInPage() {
           >
             Login
           </motion.button>
-          
-          {/* Create Account Link */}
           <motion.div
             variants={itemVariants}
             className="mt-6 text-center"
