@@ -55,8 +55,8 @@ function SignInPage() {
     // Store logged in user
     localStorage.setItem('currentUser', JSON.stringify(user));
     
-    // Navigate to dashboard or home page after login
-    navigate('/dashboard');
+    // Navigate to account page after login instead of dashboard
+    navigate('/account');
     console.log('Login successful for:', { email, password });
   };
 
