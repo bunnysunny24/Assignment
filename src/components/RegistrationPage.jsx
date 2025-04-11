@@ -6,7 +6,7 @@ function RegistrationPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
-    countryCode: '+91', // Default to India
+    countryCode: '+91',
     phoneNumber: '',
     emailAddress: '',
     password: '',
@@ -19,7 +19,6 @@ function RegistrationPage() {
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   
   useEffect(() => {
-    // Simulate loading for smooth animations
     const timer = setTimeout(() => setLoaded(true), 300);
     return () => clearTimeout(timer);
   }, []);
@@ -28,14 +27,12 @@ function RegistrationPage() {
     const { name, value } = e.target;
     
     if (name === 'phoneNumber') {
-      // Only allow digits and limit to 10 characters
       const digitsOnly = value.replace(/\D/g, '').slice(0, 10);
       setFormData({
         ...formData,
         [name]: digitsOnly
       });
       
-      // Validate phone number length
       if (digitsOnly.length > 0 && digitsOnly.length !== 10) {
         setPhoneError('Phone number must be exactly 10 digits');
       } else {
@@ -46,8 +43,7 @@ function RegistrationPage() {
         ...formData,
         [name]: value
       });
-      
-      // Validate password
+    
       validatePassword(value);
     } else {
       setFormData({
@@ -85,8 +81,6 @@ function RegistrationPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Validate phone number and password before submission
     const isPhoneValid = formData.phoneNumber.length === 10;
     const isPasswordValid = validatePassword(formData.password);
     
@@ -98,41 +92,29 @@ function RegistrationPage() {
     if (!isPasswordValid) {
       return;
     }
-    
-    // Save user data to localStorage
     const userData = {
       fullName: formData.fullName,
       phone: `${formData.countryCode}${formData.phoneNumber}`,
       email: formData.emailAddress,
-      password: formData.password, // In a real app, would be hashed
+      password: formData.password,
       companyName: formData.companyName,
       isAgency: formData.isAgency,
       createdAt: new Date().toISOString()
     };
-    
-    // Check if users array exists in localStorage
     const existingUsers = JSON.parse(localStorage.getItem('popxUsers') || '[]');
     existingUsers.push(userData);
     localStorage.setItem('popxUsers', JSON.stringify(existingUsers));
-    
-    // Store the current user email for login page
     localStorage.setItem('lastRegisteredEmail', formData.emailAddress);
-    
-    // Show success popup
     setShowSuccessPopup(true);
-    
-    // Redirect to login page after 2 seconds
     setTimeout(() => {
       navigate('/login');
     }, 2000);
   };
 
-  // Navigate to login page
   const handleLoginClick = () => {
     navigate('/login');
   };
 
-  // Popular country codes - more compact format
   const countryCodes = [
     { code: '+91', country: '🇮🇳' },
     { code: '+1', country: '🇺🇸' },
@@ -141,7 +123,6 @@ function RegistrationPage() {
     { code: '+49', country: '🇩🇪' },
   ];
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -189,7 +170,6 @@ function RegistrationPage() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
-      {/* Mobile App Container */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -203,7 +183,6 @@ function RegistrationPage() {
           onSubmit={handleSubmit}
           className="space-y-3"
         >
-          {/* Header Text */}
           <motion.div variants={itemVariants} className="mb-2">
             <h1 className="text-xl font-medium text-gray-800">
               Create your 
@@ -213,7 +192,6 @@ function RegistrationPage() {
             </h1>
           </motion.div>
           
-          {/* Full Name Field */}
           <motion.div variants={itemVariants}>
             <label className="block text-purple-500 text-xs font-medium mb-1">
               Full Name<span className="text-purple-500">*</span>
@@ -230,7 +208,6 @@ function RegistrationPage() {
             />
           </motion.div>
           
-          {/* Phone Number Field with Compact Country Code */}
           <motion.div variants={itemVariants}>
             <label className="block text-purple-500 text-xs font-medium mb-1">
               Phone number<span className="text-purple-500">*</span>
@@ -264,7 +241,6 @@ function RegistrationPage() {
             )}
           </motion.div>
           
-          {/* Email Address Field */}
           <motion.div variants={itemVariants}>
             <label className="block text-purple-500 text-xs font-medium mb-1">
               Email address<span className="text-purple-500">*</span>
@@ -281,7 +257,6 @@ function RegistrationPage() {
             />
           </motion.div>
           
-          {/* Password Field with Requirements */}
           <motion.div variants={itemVariants}>
             <label className="block text-purple-500 text-xs font-medium mb-1">
               Password <span className="text-purple-500">*</span>
@@ -304,7 +279,6 @@ function RegistrationPage() {
             )}
           </motion.div>
           
-          {/* Company Name Field */}
           <motion.div variants={itemVariants}>
             <label className="block text-purple-500 text-xs font-medium mb-1">
               Company name
@@ -320,7 +294,6 @@ function RegistrationPage() {
             />
           </motion.div>
           
-          {/* Agency Selection */}
           <motion.div variants={itemVariants} className="mt-2">
             <p className="text-gray-800 text-xs mb-2">
               Are you an Agency?<span className="text-purple-500">*</span>
@@ -368,12 +341,10 @@ function RegistrationPage() {
             </div>
           </motion.div>
           
-          {/* Password Requirements - Simplified to save space */}
           <motion.div variants={itemVariants} className="text-xs text-gray-500">
             <p>Password must have 9+ chars with letters, numbers, and symbols</p>
           </motion.div>
           
-          {/* Create Account Button */}
           <motion.button
             variants={itemVariants}
             whileHover={{ scale: 1.01 }}
@@ -384,7 +355,6 @@ function RegistrationPage() {
             Create Account
           </motion.button>
           
-          {/* Have Account? Log in Link */}
           <motion.div 
             variants={itemVariants}
             className="text-center mt-4"
@@ -402,7 +372,6 @@ function RegistrationPage() {
           </motion.div>
         </motion.form>
         
-        {/* Success Popup */}
         <AnimatePresence>
           {showSuccessPopup && (
             <motion.div
