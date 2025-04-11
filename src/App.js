@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import WelcomePage from './components/WelcomePage';
+import SignInPage from './components/SignInPage';
 
 function App() {
   return (
@@ -9,7 +10,7 @@ function App() {
         <Routes>
           <Route path="/" element={<WelcomePage />} />
           <Route path="/register" element={<div>Register Page (Coming Soon)</div>} />
-          <Route path="/login" element={<div>Login Page (Coming Soon)</div>} />
+          <Route path="/login" element={<SignInPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
