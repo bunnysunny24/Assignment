@@ -82,29 +82,29 @@ function RegistrationPage() {
           initial="hidden"
           animate={loaded ? "visible" : "hidden"}
           onSubmit={handleSubmit}
-          className="space-y-4"
+          className="space-y-3"
         >
           {/* Header Text */}
           <motion.div variants={itemVariants} className="mb-2">
-            <h1 className="text-2xl font-semibold text-gray-800">
+            <h1 className="text-xl font-medium text-gray-800">
               Create your 
             </h1>
-            <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+            <h1 className="text-xl font-medium text-gray-800 mb-3">
               PopX account
             </h1>
           </motion.div>
           
           {/* Full Name Field */}
           <motion.div variants={itemVariants}>
-            <label className="block text-purple-500 text-sm font-medium mb-1">
+            <label className="block text-purple-500 text-xs font-medium mb-1">
               Full Name<span className="text-purple-500">*</span>
             </label>
             <motion.input
-              whileFocus={{ boxShadow: "0 0 0 2px rgba(168, 85, 247, 0.2)" }}
+              whileFocus={{ boxShadow: "0 0 0 1px rgba(168, 85, 247, 0.2)" }}
               type="text"
               name="fullName"
               placeholder="Marry Doe"
-              className="w-full p-2.5 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
+              className="w-full p-2 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
               value={formData.fullName}
               onChange={handleInputChange}
               required
@@ -113,15 +113,15 @@ function RegistrationPage() {
           
           {/* Phone Number Field */}
           <motion.div variants={itemVariants}>
-            <label className="block text-purple-500 text-sm font-medium mb-1">
+            <label className="block text-purple-500 text-xs font-medium mb-1">
               Phone number<span className="text-purple-500">*</span>
             </label>
             <motion.input
-              whileFocus={{ boxShadow: "0 0 0 2px rgba(168, 85, 247, 0.2)" }}
+              whileFocus={{ boxShadow: "0 0 0 1px rgba(168, 85, 247, 0.2)" }}
               type="tel"
               name="phoneNumber"
               placeholder="Marry Doe"
-              className="w-full p-2.5 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
+              className="w-full p-2 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
               value={formData.phoneNumber}
               onChange={handleInputChange}
               required
@@ -130,15 +130,15 @@ function RegistrationPage() {
           
           {/* Email Address Field */}
           <motion.div variants={itemVariants}>
-            <label className="block text-purple-500 text-sm font-medium mb-1">
+            <label className="block text-purple-500 text-xs font-medium mb-1">
               Email address<span className="text-purple-500">*</span>
             </label>
             <motion.input
-              whileFocus={{ boxShadow: "0 0 0 2px rgba(168, 85, 247, 0.2)" }}
+              whileFocus={{ boxShadow: "0 0 0 1px rgba(168, 85, 247, 0.2)" }}
               type="email"
               name="emailAddress"
               placeholder="Marry Doe"
-              className="w-full p-2.5 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
+              className="w-full p-2 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
               value={formData.emailAddress}
               onChange={handleInputChange}
               required
@@ -147,15 +147,15 @@ function RegistrationPage() {
           
           {/* Password Field */}
           <motion.div variants={itemVariants}>
-            <label className="block text-purple-500 text-sm font-medium mb-1">
+            <label className="block text-purple-500 text-xs font-medium mb-1">
               Password <span className="text-purple-500">*</span>
             </label>
             <motion.input
-              whileFocus={{ boxShadow: "0 0 0 2px rgba(168, 85, 247, 0.2)" }}
+              whileFocus={{ boxShadow: "0 0 0 1px rgba(168, 85, 247, 0.2)" }}
               type="password"
               name="password"
               placeholder="Marry Doe"
-              className="w-full p-2.5 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
+              className="w-full p-2 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
               value={formData.password}
               onChange={handleInputChange}
               required
@@ -164,23 +164,23 @@ function RegistrationPage() {
           
           {/* Company Name Field */}
           <motion.div variants={itemVariants}>
-            <label className="block text-purple-500 text-sm font-medium mb-1">
+            <label className="block text-purple-500 text-xs font-medium mb-1">
               Company name
             </label>
             <motion.input
-              whileFocus={{ boxShadow: "0 0 0 2px rgba(168, 85, 247, 0.2)" }}
+              whileFocus={{ boxShadow: "0 0 0 1px rgba(168, 85, 247, 0.2)" }}
               type="text"
               name="companyName"
               placeholder="Marry Doe"
-              className="w-full p-2.5 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
+              className="w-full p-2 border border-gray-200 rounded-md focus:outline-none text-gray-700 text-sm"
               value={formData.companyName}
               onChange={handleInputChange}
             />
           </motion.div>
           
           {/* Agency Selection */}
-          <motion.div variants={itemVariants}>
-            <p className="text-gray-800 text-sm mb-2">
+          <motion.div variants={itemVariants} className="mt-2">
+            <p className="text-gray-800 text-xs mb-2">
               Are you an Agency?<span className="text-purple-500">*</span>
             </p>
             <div className="flex gap-6">
@@ -193,15 +193,15 @@ function RegistrationPage() {
                     checked={formData.isAgency === 'yes'}
                     onChange={() => handleAgencyChange('yes')}
                   />
-                  <div className={`w-5 h-5 rounded-full border ${formData.isAgency === 'yes' ? 'border-purple-500' : 'border-gray-300'}`}>
+                  <div className={`w-4 h-4 rounded-full border ${formData.isAgency === 'yes' ? 'border-purple-500' : 'border-gray-300'}`}>
                     {formData.isAgency === 'yes' && (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                        <div className="w-2.5 h-2.5 bg-purple-500 rounded-full"></div>
                       </div>
                     )}
                   </div>
                 </div>
-                <span className="ml-2 text-sm text-gray-700">Yes</span>
+                <span className="ml-2 text-xs text-gray-700">Yes</span>
               </label>
               
               <label className="flex items-center cursor-pointer">
@@ -213,21 +213,21 @@ function RegistrationPage() {
                     checked={formData.isAgency === 'no'}
                     onChange={() => handleAgencyChange('no')}
                   />
-                  <div className={`w-5 h-5 rounded-full border ${formData.isAgency === 'no' ? 'border-purple-500' : 'border-gray-300'}`}>
+                  <div className={`w-4 h-4 rounded-full border ${formData.isAgency === 'no' ? 'border-purple-500' : 'border-gray-300'}`}>
                     {formData.isAgency === 'no' && (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                        <div className="w-2.5 h-2.5 bg-purple-500 rounded-full"></div>
                       </div>
                     )}
                   </div>
                 </div>
-                <span className="ml-2 text-sm text-gray-700">No</span>
+                <span className="ml-2 text-xs text-gray-700">No</span>
               </label>
             </div>
           </motion.div>
           
           {/* Spacer */}
-          <div className="h-6"></div>
+          <div className="h-8"></div>
           
           {/* Create Account Button */}
           <motion.button
@@ -235,7 +235,7 @@ function RegistrationPage() {
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full py-3 bg-purple-600 text-white font-medium rounded-md transition-all duration-300"
+            className="w-full py-2.5 bg-purple-600 text-white text-sm font-medium rounded-md transition-all duration-300"
           >
             Create Account
           </motion.button>
