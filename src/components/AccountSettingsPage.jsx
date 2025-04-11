@@ -119,7 +119,7 @@ function AccountSettingsPage() {
                 {/* IMPORTANT: Replace with your own image path in public folder */}
                 {/* You can use the line below to use an image from public folder */}
                 <img 
-                  src="/image.png" 
+                  src="/image.JPG" 
                   alt="Profile" 
                   className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
                   onError={(e) => {

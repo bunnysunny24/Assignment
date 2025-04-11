@@ -127,6 +127,11 @@ function RegistrationPage() {
     }, 2000);
   };
 
+  // Navigate to login page
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
+
   // Popular country codes - more compact format
   const countryCodes = [
     { code: '+91', country: '🇮🇳' },
@@ -378,6 +383,23 @@ function RegistrationPage() {
           >
             Create Account
           </motion.button>
+          
+          {/* Have Account? Log in Link */}
+          <motion.div 
+            variants={itemVariants}
+            className="text-center mt-4"
+          >
+            <p className="text-sm text-gray-600">
+              Have an account?{" "}
+              <button 
+                type="button"
+                onClick={handleLoginClick}
+                className="text-purple-600 font-medium hover:underline focus:outline-none"
+              >
+                Log in
+              </button>
+            </p>
+          </motion.div>
         </motion.form>
         
         {/* Success Popup */}
